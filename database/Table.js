@@ -1,4 +1,4 @@
-class Database {
+class Table {
   constructor() {
     this.index = 0;
     this.data = {};
@@ -50,4 +50,4 @@ class Database {
   }
 }
 
-module.exports = Database;
+module.exports = Table;

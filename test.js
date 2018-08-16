@@ -1,10 +1,19 @@
 const { factory, manager } = require('node-factory');
 
 // User model factory definition
-manager.register('User', faker => {
+manager.register('Profile', faker => {
   return {
-    name: faker.name.findName(),
     email: faker.internet.email(),
+    name: faker.name.findName(),
+    user_id: faker.random.number(),
+  };
+});
+
+manager.register('User', faker => {
+  const pass = faker.random.uuid();
+  return {
+    password: pass.replace(/-/g, ''),
+    profile: factory('Profile').create(),
   };
 });
 
@@ -14,27 +23,18 @@ const UserModel = {
   // Model's route base (is required)
   route: '/users',
   // Database columns (is required)
-  columns: ['name', 'email'],
-  // Model factory
+  columns: ['password'],
   factory: factory('User'),
-  // Number of seed to create
-  seed: 50,
-  // Model data validation
-  validation: {
-    name: {
-      message: () => 'Name is required',
-      check: (value, data, databases) => {
-        return !!value;
-      },
-    },
-    email: {
-      message: () => 'Invalid e-mail',
-      check: (value, data, databases) => {
-        const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test(String(value).toLowerCase());
-      }
-    }
-  }
+  seed: 5,
+};
+const ProfileModel = {
+  // Name of the model (is required)
+  name: 'Profile',
+  // Model's route base (is required)
+  route: '/profiles',
+  // Database columns (is required)
+  columns: ['name', 'email', 'user_id'],
+  factory: factory('Profile'),
 };
 
 // Import Faux
@@ -42,6 +42,7 @@ const faux = require('./index');
 
 // Generate API (e.g. /users)
 faux.generate(UserModel);
+faux.generate(ProfileModel);
 
 // Start faux
 faux.start(3000);
