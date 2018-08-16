@@ -4,6 +4,7 @@ const { app, routes, Generator } = require('./Generator');
 
 /** Base faux wrapper */
 const faux = {
+  generate: Generator,
   start: (port) => {
     app.listen(port, () => {
       console.log(`\n${project.name} - v${project.version} - by ${project.author.name} (${project.author.email})\n`);
@@ -14,4 +15,4 @@ const faux = {
   }
 }
 
-module.exports = { faux, Generator };
+module.exports = faux;
