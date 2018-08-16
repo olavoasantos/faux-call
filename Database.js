@@ -16,10 +16,10 @@ class Database {
     const now = new Date().getTime();
     this.index++;
     const entry = {
-      ...data,
       id: this.index,
       created_at: now,
       updated_at: now,
+      ...data,
     };
 
     this.data[this.index] = entry;

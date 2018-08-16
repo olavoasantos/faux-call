@@ -13,6 +13,9 @@ app.use(bodyParser.json());
 // Init databases
 const databases = {};
 
+// Route list
+const routes = {};
+
 /**
  *  Generator
  *  It generates a simple CRUD based on a given Model.
@@ -153,6 +156,9 @@ const Generator = Model => {
   /** Normalizes the route */
   const route = Model.route.toLowerCase().replace(/^\/?|\/?$/, '');
 
+  /** Register route */
+  routes[Model.name] = route;
+
   /** Seeds the database based on the Model factory */
   if (Model.seed && Model.seed > 0) {
     if (!Model.factory)
@@ -223,4 +229,4 @@ const Generator = Model => {
   });
 };
 
-module.exports = { faux: app, Generator };
+module.exports = { app, routes, Generator };

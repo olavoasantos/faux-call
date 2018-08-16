@@ -11,11 +11,11 @@ const { faux, Generator } = require('faux-call');
 // Import Models
 const UserModel = require('./path/to/UserModel');
 
-// Generate API
+// Generate API (e.g. /users)
 Generator(UserModel);
 
 // Start faux
-faux.listen(3000, () => console.log('http://localhost:3000'));
+faux.start(3000);
 ```
 
 ## Model example
