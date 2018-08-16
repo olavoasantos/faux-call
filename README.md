@@ -38,6 +38,28 @@ faux.start(3000);
 - **PUT|PATCH => /route/:id**: Updates a row with a specific id
 - **DELETE => /route/:id**: Deletes a row with a specific id
 
+## Attribute routes
+
+If `attributeRoutes` is activated on the model, Faux will generate route attributes for you to get and patch data:
+
+- **GET => /route/:id/:attribute**: Gets a specific attribute from a row with a specific id
+- **PATCH => /route/:id/:attribute**: Updates a specific attribute from a row with a specific id
+
+If you wish to ignore certain attributes (such as passwords), you can declare an `ignoreAttributes` array containing the column names.
+
+## Mocking the not so happy path
+
+When testing your application, there will be times where you need to test failed states and responses. On these cases, Faux allows you to mock the `status` and `response` messages. To do so, just add a `status` and a JSON `response` string header to your request. For instance:
+
+```js
+post('http://localhost:3000/users', data, {
+    headers: {
+      status: 500,
+      response: '{"message": "E-mail field must be unique."}'
+    }
+});
+```
+
 ## Model example
 
 ```js
