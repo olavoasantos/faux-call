@@ -1,5 +1,8 @@
 // Internal dependencies
-const { App, Database, Response, Routes } = require('./Faux');
+const Response = require('../responses');
+const Database = require('../database');
+const { Routes, CreateRoute } = require('../routes');
+const App = require('../server');
 
 /**
  *  Generator
@@ -33,37 +36,40 @@ const Generator = Model => {
    *  Index route
    *  GET => /{route}
    */
-  App.get(`/${route}`, Response('index', Model));
+  CreateRoute('index', 'get', `/${route}`, Model);
 
   /**
    *  Store route
    *  POST => /{route}
    */
-  App.post(`/${route}`, Response('store', Model));
+  CreateRoute('store', 'post', `/${route}`, Model);
 
   /**
    *  Show route
    *  GET => /{route}/:id
    */
-  App.get(`/${route}/:id`, Response('show', Model));
+  CreateRoute('show', 'get', `/${route}/:id`, Model);
 
   /**
    *  Update route
-   *  PUT => /{route}/:id
+   *  PUT|PATCH => /{route}/:id
    */
-  App.put(`/${route}/:id`, Response('update', Model));
-
-  /**
-   *  Update route
-   *  PATCH => /{route}/:id
-   */
-  App.patch(`/${route}/:id`, Response('update', Model));
+  CreateRoute('update', 'put', `/${route}/:id`, Model);
+  CreateRoute('update', 'patch', `/${route}/:id`, Model);
 
   /**
    *  Delete route
    *  DELETE => /{route}/:id
    */
-  App.delete(`/${route}/:id`, Response('delete', Model));
+  CreateRoute('delete', 'delete', `/${route}/:id`, Model);
+
+  if (Model.attributeRoutes) {
+    Model.columns.forEach(column => {
+      if (!Model.ignoreAttribute || !Model.ignoreAttribute.includes(column)) {
+        CreateRoute('column', 'get', `/${route}/:id/${column}`, Model);
+      }
+    });
+  }
 };
 
-module.exports = { App, Routes, Generator };
+module.exports = Generator;

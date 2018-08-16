@@ -112,6 +112,18 @@ const Database = require('../database');
   };
 
   /**
+   *  columnResponse
+   */
+  const columnResponse = (Model, column) => (req, res) => {
+    const DB = Database.select(Model.name.toLowerCase());
+    const data = DB.select(req.params.id);
+    if (!data) res.status(500).send(JSON.stringify(`${Model.name} not found`));
+    if (!data[column]) res.status(500).send(JSON.stringify(`${column} does not exist`));
+
+    return res.send(data[column]);
+  };
+
+  /**
    *  mockResponse
    *  If you need to mock a response from the server,
    *  you can pass a 'status' and 'response' header
@@ -133,5 +145,5 @@ const Database = require('../database');
   };
 
 module.exports = {
-  mockResponse, indexResponse, storeResponse, showResponse, updateResponse, deleteResponse,
+  mockResponse, indexResponse, storeResponse, showResponse, updateResponse, deleteResponse, columnResponse,
 };

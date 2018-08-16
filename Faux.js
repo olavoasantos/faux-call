@@ -1,6 +1,7 @@
-const Database = require('./database');
+const Generators = require('./generators');
 const Response = require('./responses');
-const Routes = require('./routes');
+const Database = require('./database');
+const { Routes } = require('./routes');
 const App = require('./server');
 
 module.exports = {
@@ -8,4 +9,5 @@ module.exports = {
   Routes,
   Database,
   Response,
+  Generators,
 };

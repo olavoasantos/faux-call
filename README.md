@@ -63,6 +63,10 @@ const UserModel = {
   factory: factory('User'),
   // Number of seed to create
   seed: 50,
+  // Generate attribute routes (e.g. /users/1/email)
+  attributeRoutes: true,
+  // Ignore certain columns in attribute routes (e.g. /users/1/password)
+  attributeRoutes: ['password'],
   // Model data validation
   validation: {
     name: {

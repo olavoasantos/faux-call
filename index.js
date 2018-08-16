@@ -1,10 +1,10 @@
 const chalk = require('chalk');
 const project = require('./package.json');
-const { App, Routes, Generator } = require('./Generator');
+const { App, Routes, Generators } = require('./Faux');
 
 /** Base faux wrapper */
 const faux = {
-  generate: Generator,
+  generate: Generators.generate,
   start: (port) => {
     App.listen(port, () => {
       console.log(`\n${project.name} - v${project.version} - by ${project.author.name} (${project.author.email})\n`);
