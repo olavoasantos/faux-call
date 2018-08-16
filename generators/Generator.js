@@ -1,8 +1,8 @@
 // Internal dependencies
 const Response = require('../responses');
 const Database = require('../database');
-const { Routes, CreateRoute } = require('../routes');
 const App = require('../server');
+const { Routes, CreateRoute, CreateAttributeRoute } = require('../routes');
 
 /**
  *  Generator
@@ -66,7 +66,8 @@ const Generator = Model => {
   if (Model.attributeRoutes) {
     Model.columns.forEach(column => {
       if (!Model.ignoreAttribute || !Model.ignoreAttribute.includes(column)) {
-        CreateRoute('column', 'get', `/${route}/:id/${column}`, Model);
+        CreateAttributeRoute('show', 'get', `/${route}/:id/${column}`, Model);
+        CreateAttributeRoute('update', 'patch', `/${route}/:id/${column}`, Model);
       }
     });
   }

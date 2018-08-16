@@ -1,5 +1,12 @@
 const {
-  mockResponse, indexResponse, storeResponse, showResponse, updateResponse, deleteResponse, columnResponse,
+  mockResponse,
+  indexResponse,
+  storeResponse,
+  showResponse,
+  updateResponse,
+  deleteResponse,
+  showAtributeResponse,
+  updateAtributeResponse,
 } = require('./BaseResponses');
 
 const responses = {
@@ -8,7 +15,8 @@ const responses = {
   'show': showResponse,
   'update': updateResponse,
   'delete': deleteResponse,
-  'column': columnResponse,
+  'showAtributeResponse': showAtributeResponse,
+  'updateAtributeResponse': updateAtributeResponse,
 };
 
 module.exports = (type, model, param) => {

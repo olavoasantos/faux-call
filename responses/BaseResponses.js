@@ -112,15 +112,36 @@ const Database = require('../database');
   };
 
   /**
-   *  columnResponse
+   *  showAtributeResponse
    */
-  const columnResponse = (Model, column) => (req, res) => {
+  const showAtributeResponse = (Model, column) => (req, res) => {
     const DB = Database.select(Model.name.toLowerCase());
     const data = DB.select(req.params.id);
     if (!data) res.status(500).send(JSON.stringify(`${Model.name} not found`));
-    if (!data[column]) res.status(500).send(JSON.stringify(`${column} does not exist`));
 
     return res.send(data[column]);
+  };
+
+  /**
+   *  updateAtributeResponse
+   */
+  const updateAtributeResponse = (Model, column) => (req, res) => {
+    const DB = Database.select(Model.name.toLowerCase());
+    const data = getDataFromBody([column], req.body, false);
+
+    if (Model.validation) {
+      const errors = validate(Model.validation, data);
+      if (Object.keys(errors).length !== 0) {
+        return res.status(500).send(errors);
+      }
+    }
+
+    const newData = DB.update(req.params.id, data);
+    if (!newData) {
+      return res.status(500).send(JSON.stringify('Something went wrong'));
+    }
+
+    return res.send(newData[column]);
   };
 
   /**
@@ -137,7 +158,7 @@ const Database = require('../database');
       res.status(req.get('status'));
     }
     if (req.get('response')) {
-      res.send(JSON.stringify(JSON.parse(req.get('response'))));
+      res.send(req.get('response'));
       return true;
     }
 
@@ -145,5 +166,12 @@ const Database = require('../database');
   };
 
 module.exports = {
-  mockResponse, indexResponse, storeResponse, showResponse, updateResponse, deleteResponse, columnResponse,
+  mockResponse,
+  indexResponse,
+  storeResponse,
+  showResponse,
+  updateResponse,
+  deleteResponse,
+  showAtributeResponse,
+  updateAtributeResponse,
 };
