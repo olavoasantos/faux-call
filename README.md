@@ -2,6 +2,18 @@
 
 Simple mock server for your convenience and testing!
 
+## How it works
+
+Faux creates a VERY simple mocked database which is thrown out once the server is shut down.
+
+## Install
+
+```bash
+yarn add -D faux-call
+// or
+npm install --save-dev faux-call
+```
+
 ## Usage
 
 ```js
@@ -17,6 +29,14 @@ Generator(UserModel);
 // Start faux
 faux.start(3000);
 ```
+
+## Accepted routes
+
+- **GET => /route**: Get all rows from database
+- **POST => /route**: Stores a new row on the database
+- **GET => /route/:id**: Gets the row with a specific id
+- **PUT|PATCH => /route/:id**: Updates a row with a specific id
+- **DELETE => /route/:id**: Deletes a row with a specific id
 
 ## Model example
 
