@@ -30,10 +30,7 @@ const Generator = Model => {
 
   /** Seeds the database based on the Model factory */
   if (Model.seed && Model.seed > 0) {
-    if (!Model.factory)
-      throw new Error(
-        `Cannot seed ${Model.name}. Please provide a valid fatory.`,
-      );
+    if (!Model.factory) throw new Error(`Cannot seed ${Model.name}. Please provide a valid fatory.`);
     manager.register(`@${Model.name}`, Model.factory);
     factory(`@${Model.name}`).create(Model.seed).forEach(item => DB.create(item));
   }

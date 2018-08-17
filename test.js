@@ -18,7 +18,7 @@ const UserModel = {
   // Seeds
   seed: 2,
   // middlewares
-  // middlewares: ['auth'],
+  middlewares: ['auth'],
   // Use for auth
   authenticate: ['email', 'password'],
   // Encrypted fields

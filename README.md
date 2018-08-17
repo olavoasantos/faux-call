@@ -139,6 +139,8 @@ module.exports = UserModel;
 
 ## Version log
 
+- **v0.1.1**: Small fixes
+
 - **v0.1.0**: Using protection
 
   - Major refactor of code base

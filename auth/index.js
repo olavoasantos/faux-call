@@ -7,7 +7,7 @@ const Database = require('../database');
 const { getDataFromBody } = require('../helpers');
 
 const Auth = (Model) => {
-  App.post('/register', (req, res) => {
+  App.post(`${Config.authNamespace}/register`, (req, res) => {
     const DB = Database.select(Model.name.toLowerCase());
     const data = getDataFromBody(Model.columns, req.body);
 
@@ -40,7 +40,7 @@ const Auth = (Model) => {
     res.send({ auth: true, token });
   });
 
-  App.post('/login', (req, res) => {
+  App.post(`${Config.authNamespace}/login`, (req, res) => {
     const DB = Database.select(Model.name.toLowerCase());
     const data = getDataFromBody(Model.authenticate, req.body);
 
@@ -74,7 +74,7 @@ const Auth = (Model) => {
     res.send({ auth: true, token });
   });
 
-  App.post('/logout', (req, res) => {
+  App.post(`${Config.authNamespace}/logout`, (req, res) => {
     res.send({ auth: false, token: null });
   });
 };
