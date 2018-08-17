@@ -13,6 +13,10 @@ class Table {
     return this.select(id);
   }
 
+  whereAll(column, value) {
+    return Object.keys(this.data).filter(id => this.data[id][column] === value).map(id => this.select(id));
+  }
+
   select(id) {
     return this.data[parseInt(id)];
   }

@@ -4,7 +4,7 @@ Simple mock server for your convenience and testing!
 
 ## Still a work in progress
 
-This is still under development, which means that the API and functionality might change drastically.
+This is still under development, which means that the API and functionality might change.
 
 ## How it works
 
@@ -108,6 +108,14 @@ const UserModel = {
   // Encrypted fields
   // Array [<Strings>]
   encrypt: ['password'],
+  // Has one relationship with other models
+  hasOne: [
+    // { (Model): column_name<String> }
+  ],
+  // Has many relationship with other models
+  hasMany: [
+    // { (Model): column_name<String> }
+  ],
   // Mutate data before persisting it to the database
   // Object { (Column): <Functions> }
   mutations: {

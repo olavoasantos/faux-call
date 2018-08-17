@@ -1,3 +1,19 @@
+const ProfileModel = {
+  // Name of the model (is required)
+  name: 'Education',
+  // Model's route base (is required)
+  route: '/educations',
+  // Database columns (is required)
+  columns: ['institution', 'course', 'conclusion', 'user'],
+  seed: 2,
+  factory: faker => ({
+    'institution': faker.random.word(),
+    'course': faker.random.word(),
+    'conclusion': faker.random.boolean(),
+    'user': 1,
+  }),
+}
+
 const UserModel = {
   // Name of the model (is required)
   name: 'User',
@@ -7,6 +23,9 @@ const UserModel = {
   columns: ['name', 'email', 'password'],
   // Protected attributes
   protected: ['password'],
+  hasMany: {
+    Education: 'user',
+  },
   // Factory
   factory: faker => {
     return {
@@ -18,7 +37,7 @@ const UserModel = {
   // Seeds
   seed: 2,
   // middlewares
-  middlewares: ['auth'],
+  // middlewares: ['auth'],
   // Use for auth
   authenticate: ['email', 'password'],
   // Encrypted fields
@@ -36,6 +55,7 @@ const faux = require('./index');
 
 // Generate API (e.g. /users)
 faux.generate(UserModel);
+faux.generate(ProfileModel);
 
 // Start faux
 faux.start(3000);

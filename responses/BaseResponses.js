@@ -23,16 +23,36 @@ const { getDataFromBody } = require('../helpers');
    */
   const indexResponse = (Model) => (req, res) => {
     const DB = Database.select(Model.name.toLowerCase());
-    const data = DB.all();
+    let data = DB.all();
 
     if (Model.protected) {
-      return res.send(data.map(row => {
+      data = data.map(row => {
         Model.protected.forEach(column => {
           delete row[column];
         })
 
         return row;
-      }));
+      });
+    }
+
+    if (Model.hasOne) {
+      data = data.map(row => {
+        Object.keys(Model.hasOne).forEach(model => {
+          row[model.toLocaleLowerCase()] = Database.select(model.toLocaleLowerCase()).where(Model.hasMany[model], row.id);
+        });
+
+        return row;
+      });
+    }
+
+    if (Model.hasMany) {
+      data = data.map(row => {
+        Object.keys(Model.hasMany).forEach(model => {
+          row[model.toLocaleLowerCase()] = Database.select(model.toLocaleLowerCase()).whereAll(Model.hasMany[model], row.id);
+        });
+
+        return row;
+      });
     }
 
     return res.send(data)
@@ -79,6 +99,18 @@ const { getDataFromBody } = require('../helpers');
       });
     }
 
+    if (Model.hasOne) {
+      Object.keys(Model.hasOne).forEach(model => {
+        data[model.toLocaleLowerCase()] = Database.select(model.toLocaleLowerCase()).where(Model.hasMany[model], data.id);
+      });
+    }
+
+    if (Model.hasMany) {
+      Object.keys(Model.hasMany).forEach(model => {
+        data[model.toLocaleLowerCase()] = Database.select(model.toLocaleLowerCase()).whereAll(Model.hasMany[model], data.id);
+      });
+    }
+
     return res.send(registered);
   };
 
@@ -95,6 +127,18 @@ const { getDataFromBody } = require('../helpers');
     if (Model.protected) {
       Model.protected.forEach(column => {
         delete data[column];
+      });
+    }
+
+    if (Model.hasOne) {
+      Object.keys(Model.hasOne).forEach(model => {
+        data[model.toLocaleLowerCase()] = Database.select(model.toLocaleLowerCase()).where(Model.hasMany[model], data.id);
+      });
+    }
+
+    if (Model.hasMany) {
+      Object.keys(Model.hasMany).forEach(model => {
+        data[model.toLocaleLowerCase()] = Database.select(model.toLocaleLowerCase()).whereAll(Model.hasMany[model], data.id);
       });
     }
 
@@ -142,6 +186,18 @@ const { getDataFromBody } = require('../helpers');
     if (Model.protected) {
       Model.protected.forEach(column => {
         delete newData[column];
+      });
+    }
+
+    if (Model.hasOne) {
+      Object.keys(Model.hasOne).forEach(model => {
+        data[model.toLocaleLowerCase()] = Database.select(model.toLocaleLowerCase()).where(Model.hasMany[model], data.id);
+      });
+    }
+
+    if (Model.hasMany) {
+      Object.keys(Model.hasMany).forEach(model => {
+        data[model.toLocaleLowerCase()] = Database.select(model.toLocaleLowerCase()).whereAll(Model.hasMany[model], data.id);
       });
     }
 
