@@ -6,7 +6,7 @@ const Response = require('../responses');
 const Database = require('../database');
 const App = require('../server');
 const Auth = require('../auth');
-const Config = require('../Config');
+const Config = require('../config');
 const { Routes, CreateRoute, CreateAttributeRoute } = require('../routes');
 
 /**
@@ -76,8 +76,8 @@ const Generator = Model => {
   }
 
   if (Model.authenticate) {
-    Auth(Model);
-    global.auth = Model;
+    Config.set('authModel', Model);
+    Auth();
   }
 };
 

@@ -6,8 +6,12 @@ const Config = require('../config');
 const Database = require('../database');
 const { getDataFromBody } = require('../helpers');
 
-const Auth = (Model) => {
-  App.post(`${Config.authNamespace}/register`, (req, res) => {
+const Auth = () => {
+  const Model = Config.get('authModel');
+  const namespace = `${Config.get('auth.namespace').toLowerCase().replace(/^\/?|\/?$/, '')}`;
+  const prefix = namespace ? `/${namespace}` : namespace;
+
+  App.post(`${prefix}/register`, (req, res) => {
     const DB = Database.select(Model.name.toLowerCase());
     const data = getDataFromBody(Model.columns, req.body);
 
@@ -35,12 +39,12 @@ const Auth = (Model) => {
     }
 
     const registered = DB.create(data);
-    const token = jwt.sign({ id: registered.id, created_at: registered.created_at }, Config.secret, { expiresIn: 86400 });
+    const token = jwt.sign({ id: registered.id, created_at: registered.created_at }, Config.get('secret'), { expiresIn: 86400 });
 
     res.send({ auth: true, token });
   });
 
-  App.post(`${Config.authNamespace}/login`, (req, res) => {
+  App.post(`${prefix}/login`, (req, res) => {
     const DB = Database.select(Model.name.toLowerCase());
     const data = getDataFromBody(Model.authenticate, req.body);
 
@@ -70,11 +74,11 @@ const Auth = (Model) => {
       if (!checkField) return res.status(401).send({ auth: false, token: null, message: `Invalid ${column}` });
     });
 
-    const token = jwt.sign({ id: registered.id, created_at: registered.created_at }, Config.secret, { expiresIn: 86400 });
+    const token = jwt.sign({ id: registered.id, created_at: registered.created_at }, Config.get('secret'), { expiresIn: 86400 });
     res.send({ auth: true, token });
   });
 
-  App.post(`${Config.authNamespace}/logout`, (req, res) => {
+  App.post(`${prefix}/logout`, (req, res) => {
     res.send({ auth: false, token: null });
   });
 };

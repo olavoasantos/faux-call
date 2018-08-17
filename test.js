@@ -31,6 +31,9 @@ const UserModel = {
 // Import Faux
 const faux = require('./index');
 
+// set config
+// faux.config.set('auth.namespace', '/auth');
+
 // Generate API (e.g. /users)
 faux.generate(UserModel);
 

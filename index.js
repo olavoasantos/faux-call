@@ -1,10 +1,10 @@
 const chalk = require('chalk');
 const project = require('./package.json');
-const { App, Routes, Generators } = require('./Faux');
+const { App, Routes, Generators, Config } = require('./Faux');
 
 /** Base faux wrapper */
 const faux = {
-  App,
+  config: Config,
   generate: Generators.generate,
   start: (port) => {
     App.listen(port, () => {
