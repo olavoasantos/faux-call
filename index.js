@@ -4,6 +4,7 @@ const { App, Routes, Generators } = require('./Faux');
 
 /** Base faux wrapper */
 const faux = {
+  App,
   generate: Generators.generate,
   start: (port) => {
     App.listen(port, () => {

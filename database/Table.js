@@ -8,6 +8,11 @@ class Table {
     return Object.keys(this.data).map(id => this.data[id]);
   }
 
+  where(column, value) {
+    const id = Object.keys(this.data).find(id => this.data[id][column] === value);
+    return this.select(id);
+  }
+
   select(id) {
     return this.data[parseInt(id)];
   }

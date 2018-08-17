@@ -1,7 +1,12 @@
+// External dependencies
+const { factory, manager } = require('node-factory');
+
 // Internal dependencies
 const Response = require('../responses');
 const Database = require('../database');
 const App = require('../server');
+const Auth = require('../auth');
+const Config = require('../Config');
 const { Routes, CreateRoute, CreateAttributeRoute } = require('../routes');
 
 /**
@@ -29,7 +34,8 @@ const Generator = Model => {
       throw new Error(
         `Cannot seed ${Model.name}. Please provide a valid fatory.`,
       );
-    Model.factory.create(Model.seed).forEach(item => DB.create(item));
+    manager.register(`@${Model.name}`, Model.factory);
+    factory(`@${Model.name}`).create(Model.seed).forEach(item => DB.create(item));
   }
 
   /**
@@ -65,11 +71,16 @@ const Generator = Model => {
 
   if (Model.attributeRoutes) {
     Model.columns.forEach(column => {
-      if (!Model.ignoreAttribute || !Model.ignoreAttribute.includes(column)) {
+      if (!Model.protected || !Model.protected.includes(column)) {
         CreateAttributeRoute('show', 'get', `/${route}/:id/${column}`, Model);
         CreateAttributeRoute('update', 'patch', `/${route}/:id/${column}`, Model);
       }
     });
+  }
+
+  if (Model.authenticate) {
+    Auth(Model);
+    global.auth = Model;
   }
 };
 

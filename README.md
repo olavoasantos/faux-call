@@ -64,31 +64,39 @@ post('http://localhost:3000/users', data, {
 
 ```js
 // ./path/to/UserModel.js
-const { factory, manager } = require('node-factory');
-
-// User model factory definition
-manager.register('User', faker => {
-  return {
-    name: faker.name.findName(),
-    email: faker.internet.email(),
-  };
-});
-
 const UserModel = {
   // Name of the model (is required)
   name: 'User',
   // Model's route base (is required)
   route: '/users',
   // Database columns (is required)
-  columns: ['name', 'email'],
+  columns: ['name', 'email', 'password'],
   // Model factory
-  factory: factory('User'),
+  factory: faker => {
+    return {
+      name: faker.name.findName(),
+      email: faker.internet.email(),
+      password: faker.random.word(),
+    };
+  },
   // Number of seed to create
   seed: 50,
   // Generate attribute routes (e.g. /users/1/email)
   attributeRoutes: true,
-  // Ignore certain columns in attribute routes (e.g. /users/1/password)
-  attributeRoutes: ['password'],
+  // Protect attributes (dont send it nor create attribute routes)
+  protected: ['password'],
+  // Protect your routes with middlewares
+  middlewares: ['auth'],
+  // Use for auth
+  authenticate: ['email', 'password'],
+  // Encrypted fields
+  encrypt: ['password'],
+  // Mutate data before persisting it to the database
+  mutations: {
+    email: (value) => {
+      // do something with the email before storing it.
+    },
+  }
   // Model data validation
   validation: {
     name: {

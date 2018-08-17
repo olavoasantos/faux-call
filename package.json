@@ -14,9 +14,11 @@
   "homepage": "https://github.com/olavoasantos/faux-call",
   "license": "MIT",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
     "chalk": "^2.4.1",
     "express": "^4.16.3",
+    "jsonwebtoken": "^8.3.0",
     "node-factory": "^0.1.2"
   },
   "devDependencies": {

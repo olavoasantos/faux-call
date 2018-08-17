@@ -1,15 +1,3 @@
-const { factory, manager } = require('node-factory');
-
-// User model factory definition
-manager.register('User', faker => {
-  const pass = faker.random.uuid();
-  return {
-    name: faker.name.findName(),
-    email: faker.internet.email(),
-    password: pass.replace(/-/g, ''),
-  };
-});
-
 const UserModel = {
   // Name of the model (is required)
   name: 'User',
@@ -17,10 +5,27 @@ const UserModel = {
   route: '/users',
   // Database columns (is required)
   columns: ['name', 'email', 'password'],
-  factory: factory('User'),
-  seed: 5,
-  attributeRoutes: true,
-  ignoreAttribute: ['password'],
+  // Protected attributes
+  protected: ['password'],
+  // Factory
+  factory: faker => {
+    return {
+      name: faker.name.findName(),
+      email: faker.internet.email(),
+      password: faker.random.word(),
+    };
+  },
+  // Seeds
+  seed: 2,
+  // middlewares
+  // middlewares: ['auth'],
+  // Use for auth
+  authenticate: ['email', 'password'],
+  // Encrypted fields
+  encrypt: ['password'],
+  // Mutate data before persisting it to the database
+  mutations: {
+  }
 };
 
 // Import Faux

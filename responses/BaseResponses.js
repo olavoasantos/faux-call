@@ -1,16 +1,6 @@
+const bcrypt = require('bcryptjs');
 const Database = require('../database');
-  /**
-   *  getDataFromBody
-   *  Gets the column data from the request body.
-   */
-  const getDataFromBody = (columns, body, shouldIncludeNull = true) =>
-    columns.reduce((data, column) => {
-      if (shouldIncludeNull || body[column]) {
-        data[column] = body[column];
-      }
-      return data;
-    }, {});
-
+const { getDataFromBody } = require('../helpers');
   /**
    *  validate
    *  Validates the data based on the Model's validation rules.
@@ -33,8 +23,19 @@ const Database = require('../database');
    */
   const indexResponse = (Model) => (req, res) => {
     const DB = Database.select(Model.name.toLowerCase());
+    const data = DB.all();
 
-    return res.send(DB.all())
+    if (Model.protected) {
+      return res.send(data.map(row => {
+        Model.protected.forEach(column => {
+          delete row[column];
+        })
+
+        return row;
+      }));
+    }
+
+    return res.send(data)
   };
 
   /**
@@ -54,7 +55,31 @@ const Database = require('../database');
       }
     }
 
-    return res.send(DB.create(data));
+    if (Model.mutations) {
+      Object.keys(data).forEach(key => {
+        if (Model.mutations[key]) {
+          data[key] = Model.mutations[key](data[key]);
+        }
+      });
+    }
+
+    if (Model.encrypt) {
+      Model.encrypt.forEach(key => {
+        if (data[key]) {
+          data[key] = bcrypt.hashSync(data[key], 8);
+        }
+      })
+    }
+
+    const registered = DB.create(data);
+
+    if (Model.protected) {
+      Model.protected.forEach(column => {
+        delete registered[column];
+      });
+    }
+
+    return res.send(registered);
   };
 
   /**
@@ -66,6 +91,12 @@ const Database = require('../database');
     const DB = Database.select(Model.name.toLowerCase());
     const data = DB.select(req.params.id);
     if (!data) res.status(500).send(JSON.stringify(`${Model.name} not found`));
+
+    if (Model.protected) {
+      Model.protected.forEach(column => {
+        delete data[column];
+      });
+    }
 
     return res.send(data);
   };
@@ -87,9 +118,31 @@ const Database = require('../database');
       }
     }
 
+    if (Model.mutations) {
+      Object.keys(data).forEach(key => {
+        if (Model.mutations[key]) {
+          data[key] = Model.mutations[key](data[key]);
+        }
+      });
+    }
+
+    if (Model.encrypt) {
+      Model.encrypt.forEach(key => {
+        if (data[key]) {
+          data[key] = bcrypt.hashSync(data[key], 8);
+        }
+      })
+    }
+
     const newData = DB.update(req.params.id, data);
     if (!newData) {
       return res.status(500).send(JSON.stringify('Something went wrong'));
+    }
+
+    if (Model.protected) {
+      Model.protected.forEach(column => {
+        delete newData[column];
+      });
     }
 
     return res.send(newData);
