@@ -5,12 +5,11 @@ const ProfileModel = {
   route: '/educations',
   // Database columns (is required)
   columns: ['institution', 'course', 'conclusion', 'user'],
-  seed: 2,
   factory: faker => ({
     'institution': faker.random.word(),
     'course': faker.random.word(),
     'conclusion': faker.random.boolean(),
-    'user': 1,
+    'user': faker.random.number(),
   }),
 }
 

@@ -29,10 +29,11 @@ const Generator = Model => {
   Routes.createGroup(Model.name, route);
 
   /** Seeds the database based on the Model factory */
-  if (Model.seed && Model.seed > 0) {
-    if (!Model.factory) throw new Error(`Cannot seed ${Model.name}. Please provide a valid fatory.`);
-    manager.register(`@${Model.name}`, Model.factory);
-    factory(`@${Model.name}`).create(Model.seed).forEach(item => DB.create(item));
+  if (Model.factory) {
+    manager.register(Model.name, Model.factory);
+    const factories = Config.get('factories');
+    factories[Model.name] = { factory: factory(Model.name), seed: Model.seed || 0, Model };
+    Config.set('factories', factories);
   }
 
   /**

@@ -1,6 +1,56 @@
 const bcrypt = require('bcryptjs');
 const Database = require('../database');
 const { getDataFromBody } = require('../helpers');
+
+  const mutate = (Model, data) => {
+    if (Model.mutations) {
+      Object.keys(data).forEach(key => {
+        if (Model.mutations[key]) {
+          data[key] = Model.mutations[key](data[key]);
+        }
+      });
+    }
+
+    return data;
+  };
+
+  const encrypt = (Model, data) => {
+    if (Model.encrypt) {
+      Model.encrypt.forEach(key => {
+        if (data[key]) {
+          data[key] = bcrypt.hashSync(data[key], 8);
+        }
+      })
+    }
+
+    return data;
+  };
+
+  const hideProtected = (Model, data) => {
+    if (Model.protected) {
+      Model.protected.forEach(column => {
+        delete data[column];
+      });
+    }
+
+    return data;
+  };
+
+  const getRelationships = (Model, data) => {
+    if (Model.hasOne) {
+      Object.keys(Model.hasOne).forEach(model => {
+        data[model.toLocaleLowerCase()] = Database.select(model.toLocaleLowerCase()).where(Model.hasMany[model], data.id);
+      });
+    }
+
+    if (Model.hasMany) {
+      Object.keys(Model.hasMany).forEach(model => {
+        data[model.toLocaleLowerCase()] = Database.select(model.toLocaleLowerCase()).whereAll(Model.hasMany[model], data.id);
+      });
+    }
+
+    return data;
+  }
   /**
    *  validate
    *  Validates the data based on the Model's validation rules.
@@ -25,35 +75,10 @@ const { getDataFromBody } = require('../helpers');
     const DB = Database.select(Model.name.toLowerCase());
     let data = DB.all();
 
-    if (Model.protected) {
-      data = data.map(row => {
-        Model.protected.forEach(column => {
-          delete row[column];
-        })
-
-        return row;
-      });
-    }
-
-    if (Model.hasOne) {
-      data = data.map(row => {
-        Object.keys(Model.hasOne).forEach(model => {
-          row[model.toLocaleLowerCase()] = Database.select(model.toLocaleLowerCase()).where(Model.hasMany[model], row.id);
-        });
-
-        return row;
-      });
-    }
-
-    if (Model.hasMany) {
-      data = data.map(row => {
-        Object.keys(Model.hasMany).forEach(model => {
-          row[model.toLocaleLowerCase()] = Database.select(model.toLocaleLowerCase()).whereAll(Model.hasMany[model], row.id);
-        });
-
-        return row;
-      });
-    }
+    data = data.map(row => {
+      row = hideProtected(Model, row);
+      return getRelationships(Model, row);
+    });
 
     return res.send(data)
   };
@@ -75,43 +100,15 @@ const { getDataFromBody } = require('../helpers');
       }
     }
 
-    if (Model.mutations) {
-      Object.keys(data).forEach(key => {
-        if (Model.mutations[key]) {
-          data[key] = Model.mutations[key](data[key]);
-        }
-      });
-    }
+    data = mutate(Model, data);
+    data = encrypt(Model, data);
 
-    if (Model.encrypt) {
-      Model.encrypt.forEach(key => {
-        if (data[key]) {
-          data[key] = bcrypt.hashSync(data[key], 8);
-        }
-      })
-    }
+    data = DB.create(data);
 
-    const registered = DB.create(data);
+    data = hideProtected(Model, data);
+    data = getRelationships(Model, data);
 
-    if (Model.protected) {
-      Model.protected.forEach(column => {
-        delete registered[column];
-      });
-    }
-
-    if (Model.hasOne) {
-      Object.keys(Model.hasOne).forEach(model => {
-        data[model.toLocaleLowerCase()] = Database.select(model.toLocaleLowerCase()).where(Model.hasMany[model], data.id);
-      });
-    }
-
-    if (Model.hasMany) {
-      Object.keys(Model.hasMany).forEach(model => {
-        data[model.toLocaleLowerCase()] = Database.select(model.toLocaleLowerCase()).whereAll(Model.hasMany[model], data.id);
-      });
-    }
-
-    return res.send(registered);
+    return res.send(data);
   };
 
   /**
@@ -121,26 +118,11 @@ const { getDataFromBody } = require('../helpers');
    */
   const showResponse = (Model) => (req, res) => {
     const DB = Database.select(Model.name.toLowerCase());
-    const data = DB.select(req.params.id);
+    let data = DB.select(req.params.id);
     if (!data) res.status(500).send(JSON.stringify(`${Model.name} not found`));
 
-    if (Model.protected) {
-      Model.protected.forEach(column => {
-        delete data[column];
-      });
-    }
-
-    if (Model.hasOne) {
-      Object.keys(Model.hasOne).forEach(model => {
-        data[model.toLocaleLowerCase()] = Database.select(model.toLocaleLowerCase()).where(Model.hasMany[model], data.id);
-      });
-    }
-
-    if (Model.hasMany) {
-      Object.keys(Model.hasMany).forEach(model => {
-        data[model.toLocaleLowerCase()] = Database.select(model.toLocaleLowerCase()).whereAll(Model.hasMany[model], data.id);
-      });
-    }
+    data = hideProtected(Model, data);
+    data = getRelationships(Model, data);
 
     return res.send(data);
   };
@@ -153,7 +135,7 @@ const { getDataFromBody } = require('../helpers');
    */
   const updateResponse = (Model) => (req, res) => {
     const DB = Database.select(Model.name.toLowerCase());
-    const data = getDataFromBody(Model.columns, req.body, false);
+    let data = getDataFromBody(Model.columns, req.body, false);
 
     if (Model.validation) {
       const errors = validate(Model.validation, data);
@@ -162,46 +144,18 @@ const { getDataFromBody } = require('../helpers');
       }
     }
 
-    if (Model.mutations) {
-      Object.keys(data).forEach(key => {
-        if (Model.mutations[key]) {
-          data[key] = Model.mutations[key](data[key]);
-        }
-      });
-    }
+    data = mutate(Model, data);
+    data = encrypt(Model, data);
 
-    if (Model.encrypt) {
-      Model.encrypt.forEach(key => {
-        if (data[key]) {
-          data[key] = bcrypt.hashSync(data[key], 8);
-        }
-      })
-    }
-
-    const newData = DB.update(req.params.id, data);
-    if (!newData) {
+    data = DB.update(req.params.id, data);
+    if (!data) {
       return res.status(500).send(JSON.stringify('Something went wrong'));
     }
 
-    if (Model.protected) {
-      Model.protected.forEach(column => {
-        delete newData[column];
-      });
-    }
+    data = hideProtected(Model, data);
+    data = getRelationships(Model, data);
 
-    if (Model.hasOne) {
-      Object.keys(Model.hasOne).forEach(model => {
-        data[model.toLocaleLowerCase()] = Database.select(model.toLocaleLowerCase()).where(Model.hasMany[model], data.id);
-      });
-    }
-
-    if (Model.hasMany) {
-      Object.keys(Model.hasMany).forEach(model => {
-        data[model.toLocaleLowerCase()] = Database.select(model.toLocaleLowerCase()).whereAll(Model.hasMany[model], data.id);
-      });
-    }
-
-    return res.send(newData);
+    return res.send(data);
   };
 
   /**
