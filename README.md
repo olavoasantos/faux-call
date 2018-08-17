@@ -2,6 +2,10 @@
 
 Simple mock server for your convenience and testing!
 
+## Still a work in progress
+
+This is still under development, which means that the API and functionality might change drastically.
+
 ## How it works
 
 Faux creates a VERY simple mocked database which is thrown out once the server is shut down.
@@ -45,7 +49,7 @@ If `attributeRoutes` is activated on the model, Faux will generate route attribu
 - **GET => /route/:id/:attribute**: Gets a specific attribute from a row with a specific id
 - **PATCH => /route/:id/:attribute**: Updates a specific attribute from a row with a specific id
 
-If you wish to ignore certain attributes (such as passwords), you can declare an `ignoreAttributes` array containing the column names.
+If you wish to ignore certain attributes (such as passwords), you can declare a `protected` array containing the ignored column names.
 
 ## Mocking the not so happy path
 
@@ -132,3 +136,29 @@ const UserModel = {
 
 module.exports = UserModel;
 ```
+
+## Version log
+
+- **v0.1.0**: Using protection
+
+  - Major refactor of code base
+  - Added auto generation of atribute routes
+  - Added attribute protection
+  - Added middlewares (only auth for now)
+  - Added JWT authentication
+  - Added auth routes (register/login/logout) based on model schema
+  - Added attribute encryption using bcrypt
+  - Added attribute mutation
+  - Changed factory declaration
+  - Changed `ignoreAttribute` key to `protected`
+
+- **v0.0.2**: Bug fixes
+
+- **v0.0.1**: Hello world!
+
+  - Create CRUD based on model schema
+  - Seed database using node-factory
+
+## Author
+
+- [Olavo Amorim Santos]
