@@ -66,12 +66,19 @@ post('http://localhost:3000/users', data, {
 // ./path/to/UserModel.js
 const UserModel = {
   // Name of the model (is required)
+  // String
   name: 'User',
   // Model's route base (is required)
+  // String
   route: '/users',
   // Database columns (is required)
+  // Array [(Column)<Strings>]
   columns: ['name', 'email', 'password'],
+
+  /** --- OPTIONAL PROPS --- */
   // Model factory
+  // Function(Faker.js) => Object {(Column): <String|Number|Bool>}
+  // https://github.com/Marak/Faker.js#api-methods
   factory: faker => {
     return {
       name: faker.name.findName(),
@@ -80,24 +87,32 @@ const UserModel = {
     };
   },
   // Number of seed to create
+  // Number > 0
   seed: 50,
   // Generate attribute routes (e.g. /users/1/email)
+  // Bool
   attributeRoutes: true,
   // Protect attributes (dont send it nor create attribute routes)
+  // Array [(Column)<Strings>]
   protected: ['password'],
   // Protect your routes with middlewares
+  // Array [(middleware)<Strings>]
   middlewares: ['auth'],
   // Use for auth
+  // Array [(Column)<Strings>]
   authenticate: ['email', 'password'],
   // Encrypted fields
+  // Array [<Strings>]
   encrypt: ['password'],
   // Mutate data before persisting it to the database
+  // Object { (Column): <Functions> }
   mutations: {
     email: (value) => {
       // do something with the email before storing it.
     },
   }
   // Model data validation
+  // Object { (Column): <Object { message: <Function>, check: <Function> }> }
   validation: {
     name: {
       message: () => 'Name is required',
