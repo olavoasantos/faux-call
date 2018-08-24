@@ -65,6 +65,25 @@ console.log(new Model({
   encrypt: ['password'],
   // Mutate data before persisting it to the database
   mutations: {
+    email: (value) => {
+      // do something with the email before storing it.
+      return value + '@'
+    },
+  },
+  validation: {
+    name: {
+      message: () => 'Name is required',
+      check: (value, data, databases) => {
+        return !!value;
+      },
+    },
+    email: {
+      message: () => 'Invalid e-mail',
+      check: (value, data, databases) => {
+        const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(value).toLowerCase());
+      }
+    }
   }
 }));
 

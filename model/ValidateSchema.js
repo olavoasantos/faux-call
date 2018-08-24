@@ -20,23 +20,23 @@ module.exports = () => {
           error(`The ${name} model's validation ${rule} should be an object.`);
         }
 
-        if (!check.isSet(rule.message)) {
+        if (!check.isSet(rules[rule].message)) {
           error(`The ${name} model's validation ${rule} should contain a message function.`);
         }
 
-        if (!check.isFunction(rule.message)) {
+        if (!check.isFunction(rules[rule].message)) {
           error(`The ${name} model's validation ${rule} message should be a function.`);
         }
 
-        if (!check.isString(rule.message())) {
+        if (!check.isString(rules[rule].message())) {
           error(`The ${name} model's validation ${rule} message should return a string.`);
         }
 
-        if (!check.isSet(rule.check)) {
+        if (!check.isSet(rules[rule].check)) {
           error(`The ${name} model's validation ${rule} should contain a check function.`);
         }
 
-        if (!check.isFunction(rule.check)) {
+        if (!check.isFunction(rules[rule].check)) {
           error(`The ${name} model's validation ${rule} check should be a function.`);
         }
       });
