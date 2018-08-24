@@ -19,7 +19,8 @@
     "chalk": "^2.4.1",
     "express": "^4.16.3",
     "jsonwebtoken": "^8.3.0",
-    "node-factory": "^0.1.2"
+    "node-factory": "^0.1.2",
+    "pluralize": "^7.0.0"
   },
   "devDependencies": {
     "version-bump-prompt": "^4.1.0"
