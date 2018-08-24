@@ -1,21 +1,16 @@
-const list = {
-  'auth.namespace': '/',
-  'token.header': 'Authorization',
+const base = require('./base.config');
 
-  factories: [],
-  secret: 'SUPER_SECRET_SECRET',
-};
+module.exports = () => {
+  const list = {...base};
 
-const Config = (() => {
   const all = () => list;
-  const push = (name, value) => list[name].push(value);
   const get = (name) => list[name];
+  const push = (name, value) => list[name].push(value);
+  const assign = (name, key, value) => list[name][key] = value;
   const set = (name, value) => {
     list[name] = value;
     return list[name];
-  }
+  };
 
-  return { get, set, all, push };
-})()
-
-module.exports = Config;
+  return { get, set, all, push, assign };
+};
