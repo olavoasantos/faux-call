@@ -14,64 +14,45 @@ const { Routes, CreateRoute, CreateAttributeRoute } = require('../routes');
  *  It generates a simple CRUD based on a given Model.
  */
 const Generator = Model => {
-  /** Validates the Model */
-  if (!Model.name) throw new Error('Models require a name');
-  if (!Model.route) throw new Error('Models require a route');
-  if (!Model.columns) throw new Error('Models require a columns');
-
-  /** Creates and registers the new database */
-  const DB = Database.create(Model.name.toLowerCase());
-
-  /** Normalizes the route */
-  const route = Model.route.toLowerCase().replace(/^\/?|\/?$/, '');
-
   /** Register route */
-  Routes.createGroup(Model.name, route);
-
-  /** Seeds the database based on the Model factory */
-  if (Model.factory) {
-    manager.register(Model.name, Model.factory);
-    const factories = Config.get('factories');
-    factories[Model.name] = { factory: factory(Model.name), seed: Model.seed || 0, Model };
-    Config.set('factories', factories);
-  }
+  Routes.createGroup(Model.name, Model.route);
 
   /**
    *  Index route
    *  GET => /{route}
    */
-  CreateRoute('index', 'get', `/${route}`, Model);
+  CreateRoute('index', 'get', `${Model.route}`, Model);
 
   /**
    *  Store route
    *  POST => /{route}
    */
-  CreateRoute('store', 'post', `/${route}`, Model);
+  CreateRoute('store', 'post', `${Model.route}`, Model);
 
   /**
    *  Show route
    *  GET => /{route}/:id
    */
-  CreateRoute('show', 'get', `/${route}/:id`, Model);
+  CreateRoute('show', 'get', `${Model.route}/:id`, Model);
 
   /**
    *  Update route
    *  PUT|PATCH => /{route}/:id
    */
-  CreateRoute('update', 'put', `/${route}/:id`, Model);
-  CreateRoute('update', 'patch', `/${route}/:id`, Model);
+  CreateRoute('update', 'put', `${Model.route}/:id`, Model);
+  CreateRoute('update', 'patch', `${Model.route}/:id`, Model);
 
   /**
    *  Delete route
    *  DELETE => /{route}/:id
    */
-  CreateRoute('delete', 'delete', `/${route}/:id`, Model);
+  CreateRoute('delete', 'delete', `${Model.route}/:id`, Model);
 
   if (Model.attributeRoutes) {
     Model.columns.forEach(column => {
-      if (!Model.protected || !Model.protected.includes(column)) {
-        CreateAttributeRoute('show', 'get', `/${route}/:id/${column}`, Model);
-        CreateAttributeRoute('update', 'patch', `/${route}/:id/${column}`, Model);
+      if (!Model.protected.includes(column)) {
+        CreateAttributeRoute('show', 'get', `${Model.route}/:id/${column}`, Model);
+        CreateAttributeRoute('update', 'patch', `${Model.route}/:id/${column}`, Model);
       }
     });
   }

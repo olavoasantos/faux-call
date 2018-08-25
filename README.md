@@ -27,8 +27,14 @@ const faux = require('faux-call');
 // Import Models
 const UserModel = require('./path/to/UserModel');
 
-// Generate API
-faux.generate(UserModel);
+// Register API
+faux.register(UserModel);
+
+// Set auth namespace
+// localhost:3000/auth/login
+// localhost:3000/auth/logout
+// localhost:3000/auth/register
+faux.config.set('auth.namespace', '/auth');
 
 // Start faux
 faux.start(3000);
@@ -109,13 +115,15 @@ const UserModel = {
   // Array [<Strings>]
   encrypt: ['password'],
   // Has one relationship with other models
-  hasOne: [
-    // { (Model): column_name<String> }
-  ],
+  // { (Model name): column_name<String> }
+  hasOne: {
+    'Profile': 'user',
+  },
   // Has many relationship with other models
-  hasMany: [
-    // { (Model): column_name<String> }
-  ],
+  // { (Model name): column_name<String> }
+  hasMany: {
+    'Post': 'user',
+  },
   // Mutate data before persisting it to the database
   // Object { (Column): <Functions> }
   mutations: {
@@ -146,6 +154,12 @@ module.exports = UserModel;
 ```
 
 ## Version log
+
+- **v0.1.4**: Internal refactor
+
+  - Added relationships (hasOne, hasMany)
+  - Added eager loading relationships
+  - Added custom authentication prefix
 
 - **v0.1.1**: Small fixes
 

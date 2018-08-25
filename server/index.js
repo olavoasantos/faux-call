@@ -1,10 +1,12 @@
-// External dependencies
-const bodyParser = require('body-parser');
-const express = require('express');
-const app = express();
+const setupCors = require('./cors');
+const server = require('./instance');
+const setupPlugins = require('./plugins');
 
-// Init body parser
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+// Server instance init
+const app = server();
+
+// Server setup
+setupCors(app);
+setupPlugins(app);
 
 module.exports = app;
