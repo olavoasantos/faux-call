@@ -1,7 +1,9 @@
+const bcrypt = require('bcryptjs');
+const Config = require('../config');
 const pluralize = require('pluralize');
 const Database = require('../database');
+const Validate = require('./ValidateSchema');
 const check = require('../helpers/typeCheck');
-const Validate = require('./ValidateSchema')();
 
 class Model {
   constructor(ModelSchema) {
@@ -60,11 +62,14 @@ class Model {
       : {
           model: relationship,
         };
+    let relationshipModel;
     if (this.hasOne[relationship.model]) {
-      return Database.select(relationship.model).where(this.hasOne[relationship.model], model_id);
+      relationshipModel = Config.get('models')[relationship.model];
+      return relationshipModel.database.where(this.hasOne[relationship.model], model_id);
     }
     if (this.hasMany[relationship.model]) {
-      return Database.select(relationship.model).whereAll(this.hasMany[relationship.model], model_id) || [];
+      relationshipModel = Config.get('models')[relationship.model];
+      return relationshipModel.database.whereAll(this.hasMany[relationship.model], model_id) || [];
     }
   }
 
@@ -73,7 +78,7 @@ class Model {
       this.eagerLoad.forEach(relationship => {
         const relationshipData = this.loadRelationship(row.id, relationship);
         if (relationshipData) {
-          row[relationship] = relationshipData;
+          row[relationship.model.toLowerCase()] = relationshipData;
         }
       });
     }
@@ -93,7 +98,7 @@ class Model {
   encryptColumns(data) {
     return Object.keys(data).reduce((encrypted, column) => {
       let value = data[column];
-      if (this.encrypt[column]) {
+      if (this.encrypt.includes(column)) {
         value = bcrypt.hashSync(data[column], 8);
       }
       return { ...encrypted, [column]: value };

@@ -5,7 +5,7 @@
   const getDataFromBody = (columns, body, shouldIncludeNull = true) =>
     columns.reduce((data, column) => {
       if (shouldIncludeNull || body[column]) {
-        data[column] = isNan(body[column]) ? body[column] : parseInt(body[column]);
+        data[column] = isNaN(parseFloat(body[column])) ? body[column] : parseInt(body[column]);
       }
       return data;
     }, {});

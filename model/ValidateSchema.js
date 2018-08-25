@@ -5,7 +5,7 @@ const error = require('../error');
 const check = require('../helpers/typeCheck');
 const middlewares = require('../middlewares/middlewares');
 
-module.exports = () => {
+module.exports = (() => {
   let name = null;
   const columnList = [];
 
@@ -33,28 +33,11 @@ module.exports = () => {
               `The ${name} model's eager load relationship ${relationship} object should contain contain a 'model' key.`,
             );
           }
-          if (!check.isSet(relationships[relationship].columns)) {
-            error(
-              `The ${name} model's eager load relationship ${relationship} object should contain contain a 'columns' key.`,
-            );
-          }
           if (!check.isString(relationships[relationship].model)) {
             error(
               `The ${name} model's eager load relationship ${relationship} object 'model' should be a string.`,
             );
           }
-          if (!check.isArray(relationships[relationship].columns)) {
-            error(
-              `The ${name} model's eager load relationship ${relationship} object 'columns' should be an array.`,
-            );
-          }
-          relationships[relationship].columns.forEach(column => {
-            if (!check.isString(column)) {
-              error(
-                `The ${name} model's eager load relationship ${relationship} object 'columns' should only contain strings.`,
-              );
-            }
-          });
         }
       });
       return relationships;
@@ -311,4 +294,4 @@ module.exports = () => {
       return modelName;
     },
   };
-};
+})();

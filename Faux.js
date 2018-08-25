@@ -1,15 +1,8 @@
-const Generators = require('./generators');
-const Response = require('./responses');
-const Database = require('./database');
-const { Routes } = require('./routes');
 const Config = require('./config');
-const App = require('./server');
+const { Start, Register } = require('./main');
 
 module.exports = {
-  App,
+  Start,
   Config,
-  Routes,
-  Database,
-  Response,
-  Generators,
+  Register,
 };

@@ -5,11 +5,12 @@ const ProfileModel = {
   route: '/educations',
   // Database columns (is required)
   columns: ['institution', 'course', 'conclusion', 'user'],
+  seed: 2,
   factory: faker => ({
     'institution': faker.random.word(),
     'course': faker.random.word(),
     'conclusion': faker.random.boolean(),
-    'user': faker.random.number(),
+    'user': 3,
   }),
 }
 
@@ -22,9 +23,12 @@ const UserModel = {
   columns: ['name', 'email', 'password'],
   // Protected attributes
   protected: ['password'],
-  hasMany: {
+  hasOne: {
     Education: 'user',
   },
+  eagerLoad: [
+    { model: 'Education' },
+  ],
   // Factory
   factory: faker => {
     return {
@@ -50,11 +54,11 @@ const UserModel = {
 const faux = require('./index');
 
 // set config
-// faux.config.set('auth.namespace', '/auth');
+faux.config.set('auth.namespace', '/auth');
 
 // Generate API (e.g. /users)
-faux.generate(UserModel);
-faux.generate(ProfileModel);
+faux.register(UserModel);
+faux.register(ProfileModel);
 
 // Start faux
 faux.start(3000);

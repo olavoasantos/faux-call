@@ -1,6 +1,6 @@
 {
   "name": "faux-call",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Simple mock server for your convenience and testing",
   "main": "index.js",
   "keywords": [
