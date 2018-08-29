@@ -5,8 +5,10 @@ const Seeder = require('./Seeder');
 const Config = require('../config');
 const { generate } = require('../generators');
 const project = require('../package.json');
+const Modules = require('../modules');
 
 const Start = port => {
+  Modules.$$init();
   Seeder.seed();
   const models = Config.get('models');
   Object.keys(models).forEach(name => generate(models[name]));

@@ -23,7 +23,11 @@ class Model {
     this.eagerLoad = [];
 
     this.hydrate(ModelSchema);
-    this.database = Database.create(pluralize(this.name.toLowerCase()));
+    Database.create(pluralize(this.name.toLowerCase()));
+  }
+
+  database() {
+    return Database.select(pluralize(this.name.toLowerCase()));
   }
 
   hydrate(ModelSchema) {
@@ -65,11 +69,11 @@ class Model {
     let relationshipModel;
     if (this.hasOne[relationship.model]) {
       relationshipModel = Config.get('models')[relationship.model];
-      return relationshipModel.database.where(this.hasOne[relationship.model], model_id);
+      return relationshipModel.database().where(this.hasOne[relationship.model], model_id);
     }
     if (this.hasMany[relationship.model]) {
       relationshipModel = Config.get('models')[relationship.model];
-      return relationshipModel.database.whereAll(this.hasMany[relationship.model], model_id) || [];
+      return relationshipModel.database().whereAll(this.hasMany[relationship.model], model_id) || [];
     }
   }
 
@@ -114,28 +118,28 @@ class Model {
   }
 
   all() {
-    return this.database.all().map(row => this.return(row));
+    return this.database().all().map(row => this.return(row));
   }
 
   create(data) {
     const modelData = this.prepare(data);
-    const row = this.database.create(modelData);
+    const row = this.database().create(modelData);
     return this.return(row);
   }
 
   find(id) {
-    const row = this.database.select(id);
+    const row = this.database().select(id);
     return row ? this.return(row) : row;
   }
 
   update(id, data) {
     const modelData = this.prepare(data);
-    const row = this.database.update(id, data);
+    const row = this.database().update(id, data);
     return row ? this.return(row) : row;
   }
 
   delete(id) {
-    const wasDeleted = this.database.delete(id);
+    const wasDeleted = this.database().delete(id);
     return wasDeleted;
   }
 }

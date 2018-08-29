@@ -20,6 +20,7 @@ const Auth = () => {
     }
 
     const registered = Model.create(data);
+    console.log('REGISTER', registered);
     const token = jwt.sign({ id: registered.id, created_at: registered.created_at }, Config.get('secret'), { expiresIn: 86400 });
 
     res.send({ auth: true, token });
@@ -33,7 +34,7 @@ const Auth = () => {
     let registered;
     Model.authenticate.forEach(column => {
       if (!Model.encrypt || (Model.encrypt && !Model.encrypt.includes(column))) {
-        registered = Model.database.where(column, data[column]);
+        registered = Model.database().where(column, data[column]);
       }
     });
     if (!registered) return res.status(401).send({ auth: false, token: null, message: 'User not found' });

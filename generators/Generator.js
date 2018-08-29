@@ -1,7 +1,7 @@
 // External dependencies
 const { factory, manager } = require('node-factory');
-
 // Internal dependencies
+const modules = require('../modules');
 const Response = require('../responses');
 const Database = require('../database');
 const App = require('../server');
@@ -59,6 +59,7 @@ const Generator = Model => {
 
   if (Model.authenticate) {
     Config.set('authModel', Model);
+    modules.get('auth').set('model', Model);
     Auth();
   }
 };
