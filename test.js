@@ -60,5 +60,9 @@ faux.config.set('auth.namespace', '/auth');
 faux.register(UserModel);
 faux.register(ProfileModel);
 
+faux.route.get('/test', (req, res) => {
+  res.send('test');
+});
+
 // Start faux
 faux.start(3000);
