@@ -1,4 +1,6 @@
 module.exports = {
+  'api.prefix': '/',
+
   'auth.namespace': '/',
   'token.header': 'Authorization',
 

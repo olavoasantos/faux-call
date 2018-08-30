@@ -55,6 +55,7 @@ const faux = require('./index');
 
 // set config
 faux.config.set('auth.namespace', '/auth');
+faux.config.set('api.prefix', '/api');
 
 // Generate API (e.g. /users)
 faux.register(UserModel);
