@@ -59,7 +59,7 @@ const Generator = Model => {
 
   if (Model.authenticate) {
     Config.set('authModel', Model);
-    modules.get('auth').set('model', Model);
+    Config.set('auth.model', Model);
     Auth();
   }
 };

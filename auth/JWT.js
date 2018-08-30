@@ -10,15 +10,13 @@ const { getDataFromBody } = require('../helpers');
 
 class JWT extends Auth {
   init(self) {
-    self.model = null;
     self.secret = Config.get('auth.secret');
-    self.namespace = Config.get('auth.namespace');
     self.tokenHeader = Config.get('auth.header');
+    self.namespace = Config.get('auth.namespace');
     self.expiration = Config.get('auth.expiration');
   }
 
   validate(req, res, next) {
-    console.log('MODEL #########', Config.get('models')[this.model.name].database())
     const token =
       req.headers[this.tokenHeader] ||
       req.headers[this.tokenHeader.toLowerCase()];
@@ -33,11 +31,10 @@ class JWT extends Auth {
           .status(500)
           .send({ auth: false, message: 'Failed to authenticate token.' });
 
-      const check = this.model.database().select(user.id);
+      const check = Config.get('auth.model').database().select(user.id);
+      console.log('AUTH.MODEL', Config.get('auth.model'));
+      console.log('CHECK', check);
 
-      console.log('this.model', this.model);
-      console.log('USER', user)
-      console.log('CHECK', check)
       if (!check || check.created_at !== user.created_at)
         return res.status(500).send({ auth: false, message: 'Unauthorized.' });
 
