@@ -4,8 +4,16 @@ const indexResponse = require('./indexResponse');
 const storeResponse = require('./storeResponse');
 const updateResponse = require('./updateResponse');
 const deleteResponse = require('./deleteResponse');
-const showAtributeResponse = require('./showAttributeResponse');
-const updateAtributeResponse = require('./updateAttributeResponse');
+const showAttributeResponse = require('./showAttributeResponse');
+const updateAttributeResponse = require('./updateAttributeResponse');
+const hasManyIndexResponse = require('./hasManyIndexResponse');
+const hasManyStoreResponse = require('./hasManyStoreResponse');
+const hasManyUpdateResponse = require('./hasManyUpdateResponse');
+const hasManyDeleteResponse = require('./hasManyDeleteResponse');
+const hasOneIndexResponse = require('./hasOneIndexResponse');
+const hasOneStoreResponse = require('./hasOneStoreResponse');
+const hasOneUpdateResponse = require('./hasOneUpdateResponse');
+const hasOneDeleteResponse = require('./hasOneDeleteResponse');
 
 const responses = {
   'index': indexResponse,
@@ -13,8 +21,16 @@ const responses = {
   'show': showResponse,
   'update': updateResponse,
   'delete': deleteResponse,
-  'showAtributeResponse': showAtributeResponse,
-  'updateAtributeResponse': updateAtributeResponse,
+  'showAttributeResponse': showAttributeResponse,
+  'updateAttributeResponse': updateAttributeResponse,
+  'hasManyIndexResponse': hasManyIndexResponse,
+  'hasManyStoreResponse': hasManyStoreResponse,
+  'hasManyUpdateResponse': hasManyUpdateResponse,
+  'hasManyDeleteResponse': hasManyDeleteResponse,
+  'hasOneIndexResponse': hasOneIndexResponse,
+  'hasOneStoreResponse': hasOneStoreResponse,
+  'hasOneUpdateResponse': hasOneUpdateResponse,
+  'hasOneDeleteResponse': hasOneDeleteResponse,
 };
 
 module.exports = (type, model, param) => {

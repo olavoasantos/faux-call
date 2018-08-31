@@ -10,7 +10,7 @@ const ProfileModel = {
     'institution': faker.random.word(),
     'course': faker.random.word(),
     'conclusion': faker.random.boolean(),
-    'user': 3,
+    'user': 1,
   }),
 }
 
@@ -23,11 +23,13 @@ const UserModel = {
   columns: ['name', 'email', 'password'],
   // Protected attributes
   protected: ['password'],
+  attributeRoutes: true,
+  relationshipRoutes: true,
   hasOne: {
     Education: 'user',
   },
   eagerLoad: [
-    { model: 'Education' },
+    'Education',
   ],
   // Factory
   factory: faker => {
@@ -55,7 +57,6 @@ const faux = require('./index');
 
 // set config
 faux.config.set('auth.namespace', '/auth');
-faux.config.set('api.prefix', '/api');
 
 // Generate API (e.g. /users)
 faux.register(UserModel);

@@ -102,6 +102,9 @@ const UserModel = {
   // Generate attribute routes (e.g. /users/1/email)
   // Bool
   attributeRoutes: true,
+  // Generate relationship routes (e.g. /users/1/profile)
+  // Bool
+  relationshipRoutes: true,
   // Protect attributes (dont send it nor create attribute routes)
   // Array [(Column)<Strings>]
   protected: ['password'],

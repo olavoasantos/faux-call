@@ -12,6 +12,7 @@ class Model {
     this.columns = [];
     this.factory = () => ({});
     this.attributeRoutes = false;
+    this.relationshipRoutes = false;
     this.protected = [];
     this.middlewares = [];
     this.encrypt = [];
@@ -77,19 +78,20 @@ class Model {
       : {
           model: relationship
         };
+
     let relationshipModel;
-    if (this.hasOne[relationship.model]) {
-      relationshipModel = Config.get('models')[relationship.model];
+    if (this.hasOne[eagerLoad.model]) {
+      relationshipModel = Config.get('models')[eagerLoad.model];
       return relationshipModel.database.where(
-        this.hasOne[relationship.model],
+        this.hasOne[eagerLoad.model],
         model_id
       );
     }
-    if (this.hasMany[relationship.model]) {
-      relationshipModel = Config.get('models')[relationship.model];
+    if (this.hasMany[eagerLoad.model]) {
+      relationshipModel = Config.get('models')[eagerLoad.model];
       return (
         relationshipModel.database.whereAll(
-          this.hasMany[relationship.model],
+          this.hasMany[eagerLoad.model],
           model_id
         ) || []
       );
@@ -101,7 +103,11 @@ class Model {
       this.eagerLoad.forEach(relationship => {
         const relationshipData = this.loadRelationship(row.id, relationship);
         if (relationshipData) {
-          row[relationship.model.toLowerCase()] = relationshipData;
+          row[
+            relationship.model
+              ? relationship.model.toLowerCase()
+              : relationship.toLowerCase()
+          ] = relationshipData;
         }
       });
     }

@@ -14,7 +14,7 @@ const updateAtributeResponse = (Model, column) => (req, res) => {
   const row = Model.update(req.params.id, data);
   if (!row) return res.status(500).send(JSON.stringify('Something went wrong'));
 
-  return res.send(Model[column]);
+  return res.send(row[column]);
 };
 
 module.exports = updateAtributeResponse;
