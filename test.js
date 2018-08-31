@@ -55,10 +55,15 @@ const faux = require('./index');
 
 // set config
 faux.config.set('auth.namespace', '/auth');
+faux.config.set('api.prefix', '/api');
 
 // Generate API (e.g. /users)
 faux.register(UserModel);
 faux.register(ProfileModel);
+
+faux.route.get('/test', (req, res) => {
+  res.send('test');
+});
 
 // Start faux
 faux.start(3000);

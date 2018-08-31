@@ -1,13 +1,11 @@
-const {
-  mockResponse,
-  indexResponse,
-  storeResponse,
-  showResponse,
-  updateResponse,
-  deleteResponse,
-  showAtributeResponse,
-  updateAtributeResponse,
-} = require('./BaseResponses');
+const mockResponse = require('./mockResponse');
+const showResponse = require('./showResponse');
+const indexResponse = require('./indexResponse');
+const storeResponse = require('./storeResponse');
+const updateResponse = require('./updateResponse');
+const deleteResponse = require('./deleteResponse');
+const showAtributeResponse = require('./showAttributeResponse');
+const updateAtributeResponse = require('./updateAttributeResponse');
 
 const responses = {
   'index': indexResponse,
@@ -28,4 +26,4 @@ module.exports = (type, model, param) => {
       reponse(model, param)(req, res);
     }
   };
-}
+};
