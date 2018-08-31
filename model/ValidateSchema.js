@@ -155,6 +155,14 @@ module.exports = (() => {
       return attributeRoutes;
     },
 
+    relationshipRoutes: relationshipRoutes => {
+      if (!check.isBool(relationshipRoutes)) {
+        error(`The ${name} model's relationshipRoutes should be a boolean.`);
+      }
+
+      return relationshipRoutes;
+    },
+
     factory: modelFactory => {
       if (!check.isFunction(modelFactory)) {
         error(`The ${name} model's factory should be a function.`);

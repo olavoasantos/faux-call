@@ -7,7 +7,12 @@ const Database = require('../database');
 const App = require('../server');
 const Auth = require('../auth');
 const Config = require('../config');
-const { Routes, CreateRoute, CreateAttributeRoute } = require('../routes');
+const {
+  Routes,
+  CreateRoute,
+  CreateAttributeRoute,
+  CreateRelationshipRoute
+} = require('../routes');
 
 /**
  *  Generator
@@ -51,8 +56,87 @@ const Generator = Model => {
   if (Model.attributeRoutes) {
     Model.columns.forEach(column => {
       if (!Model.protected.includes(column)) {
-        CreateAttributeRoute('show', 'get', `${Model.route}/:id/${column}`, Model);
-        CreateAttributeRoute('update', 'patch', `${Model.route}/:id/${column}`, Model);
+        CreateAttributeRoute(
+          'show',
+          'get',
+          `${Model.route}/:id/${column}`,
+          Model
+        );
+        CreateAttributeRoute(
+          'update',
+          'patch',
+          `${Model.route}/:id/${column}`,
+          Model
+        );
+      }
+    });
+  }
+
+  if (Model.relationshipRoutes) {
+    Object.keys(Model.hasOne).forEach(relationship => {
+      if (!Model.protected.includes(relationship)) {
+        const Relationship = Config.get('models')[relationship];
+        CreateRelationshipRoute(
+          'hasOneIndexResponse',
+          'get',
+          `${Model.route}/:id/${relationship.toLowerCase()}`,
+          Model,
+          Relationship
+        );
+        CreateRelationshipRoute(
+          'hasOneStoreResponse',
+          'post',
+          `${Model.route}/:id/${relationship.toLowerCase()}`,
+          Model,
+          Relationship
+        );
+        CreateRelationshipRoute(
+          'hasOneUpdateResponse',
+          'patch',
+          `${Model.route}/:id/${relationship.toLowerCase()}/:relationshipId`,
+          Model,
+          Relationship
+        );
+        CreateRelationshipRoute(
+          'hasOneDeleteResponse',
+          'delete',
+          `${Model.route}/:id/${relationship.toLowerCase()}/:relationshipId`,
+          Model,
+          Relationship
+        );
+      }
+    });
+    Object.keys(Model.hasMany).forEach(relationship => {
+      if (!Model.protected.includes(relationship)) {
+        const Relationship = Config.get('models')[relationship];
+        CreateRelationshipRoute(
+          'hasManyIndexResponse',
+          'get',
+          `${Model.route}/:id/${relationship.toLowerCase()}`,
+          Model,
+          Relationship
+        );
+        CreateRelationshipRoute(
+          'hasManyStoreResponse',
+          'post',
+          `${Model.route}/:id/${relationship.toLowerCase()}`,
+          Model,
+          Relationship
+        );
+        CreateRelationshipRoute(
+          'hasManyUpdateResponse',
+          'patch',
+          `${Model.route}/:id/${relationship.toLowerCase()}/:relationshipId`,
+          Model,
+          Relationship
+        );
+        CreateRelationshipRoute(
+          'hasManyDeleteResponse',
+          'delete',
+          `${Model.route}/:id/${relationship.toLowerCase()}/:relationshipId`,
+          Model,
+          Relationship
+        );
       }
     });
   }

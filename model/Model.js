@@ -12,6 +12,7 @@ class Model {
     this.columns = [];
     this.factory = () => ({});
     this.attributeRoutes = false;
+    this.relationshipRoutes = false;
     this.protected = [];
     this.middlewares = [];
     this.encrypt = [];
@@ -28,13 +29,28 @@ class Model {
 
   hydrate(ModelSchema) {
     this.name = Validate.name(ModelSchema.name);
-    this.route = Validate.route(ModelSchema.route);
+    this.route = this.generateRoute(Validate.route(ModelSchema.route));
     this.columns = Validate.columns(ModelSchema.columns);
     Object.keys(ModelSchema).forEach(property => {
-      if (check.isSet(Validate[property])) {
+      if (
+        !['name', 'route', 'columns'].includes(property) &&
+        check.isSet(Validate[property])
+      ) {
         this[property] = Validate[property](ModelSchema[property]);
       }
     });
+  }
+
+  generateRoute(route) {
+    const prefix = Config.get('api.prefix')
+      .replace(/  +/g, '-')
+      .replace(/^\/|\/$/g, '')
+      .toLowerCase();
+    const uri = route
+      .replace(/  +/g, '-')
+      .replace(/^\/|\/$/g, '')
+      .toLowerCase();
+    return `/${prefix}/${uri}`.replace(/\/\//g, '/');
   }
 
   validate(data) {
@@ -60,16 +76,25 @@ class Model {
     const eagerLoad = check.isObject(relationship)
       ? relationship
       : {
-          model: relationship,
+          model: relationship
         };
+
     let relationshipModel;
-    if (this.hasOne[relationship.model]) {
-      relationshipModel = Config.get('models')[relationship.model];
-      return relationshipModel.database.where(this.hasOne[relationship.model], model_id);
+    if (this.hasOne[eagerLoad.model]) {
+      relationshipModel = Config.get('models')[eagerLoad.model];
+      return relationshipModel.database.where(
+        this.hasOne[eagerLoad.model],
+        model_id
+      );
     }
-    if (this.hasMany[relationship.model]) {
-      relationshipModel = Config.get('models')[relationship.model];
-      return relationshipModel.database.whereAll(this.hasMany[relationship.model], model_id) || [];
+    if (this.hasMany[eagerLoad.model]) {
+      relationshipModel = Config.get('models')[eagerLoad.model];
+      return (
+        relationshipModel.database.whereAll(
+          this.hasMany[eagerLoad.model],
+          model_id
+        ) || []
+      );
     }
   }
 
@@ -78,7 +103,11 @@ class Model {
       this.eagerLoad.forEach(relationship => {
         const relationshipData = this.loadRelationship(row.id, relationship);
         if (relationshipData) {
-          row[relationship.model.toLowerCase()] = relationshipData;
+          row[
+            relationship.model
+              ? relationship.model.toLowerCase()
+              : relationship.toLowerCase()
+          ] = relationshipData;
         }
       });
     }

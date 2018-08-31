@@ -27,11 +27,25 @@ const CreateAttributeRoute = (response, type, route, model) => {
     }
   }
 
-  App[type.toLowerCase()](route, ...middlewares, Response(response.toLowerCase() + 'AtributeResponse', model, param));
+  App[type.toLowerCase()](route, ...middlewares, Response(response.toLowerCase() + 'AttributeResponse', model, param));
+}
+
+const CreateRelationshipRoute = (response, type, route, model, relationship) => {
+  Routes.register(type.toUpperCase(), route);
+
+  const middlewares = [];
+  if (model.middleware) {
+    if (Array.isArray(model.middleware)) {
+      model.middleware.forEach(name => middlewares.push(Middlewares(name)));
+    }
+  }
+
+  App[type.toLowerCase()](route, ...middlewares, Response(response, model, relationship));
 }
 
 module.exports = {
   Routes,
   CreateRoute,
   CreateAttributeRoute,
+  CreateRelationshipRoute,
 }
