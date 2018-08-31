@@ -42,7 +42,7 @@ class Table {
     const entry = {
       ...oldData,
       ...data,
-      id,
+      id: parseInt(id),
       updated_at: (new Date).getTime()
     };
 
