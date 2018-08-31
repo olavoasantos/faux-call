@@ -2,6 +2,7 @@ const { getDataFromBody } = require('../helpers');
 
 /**
  *  hasOneDeleteResponse
+ *
  */
 const hasOneDeleteResponse = (Model, Relationship) => (req, res) => {
   const row = Relationship.database.where('id', parseInt(req.params.relationshipId));
