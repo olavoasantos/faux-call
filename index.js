@@ -1,4 +1,4 @@
-const { Config, Start, Register, App } = require('./Faux');
+const { Start, Register, App, Config } = require('./main');
 
 /** Base faux wrapper */
 const faux = {
