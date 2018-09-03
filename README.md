@@ -2,7 +2,7 @@
 
 Simple mock server for your convenience and testing!
 
-## Still a work in progress
+## Disclaimer
 
 This is still under development, which means that the API and functionality might change.
 
@@ -20,7 +20,11 @@ npm install --save-dev faux-call
 
 ## Usage
 
+Create a server file which will initialize Faux-call:
+
 ```js
+// ./path/to/faux.server.js
+
 // Import Faux
 const faux = require('faux-call');
 
@@ -30,14 +34,29 @@ const UserModel = require('./path/to/UserModel');
 // Register API
 faux.register(UserModel);
 
+// Set API namespace
+// localhost:3000/api/users
+faux.config.set('api.namespace', '/api');
+
 // Set auth namespace
 // localhost:3000/auth/login
 // localhost:3000/auth/logout
 // localhost:3000/auth/register
 faux.config.set('auth.namespace', '/auth');
 
+// Defining custom route
+faux.route.get('/my/custom/route', (res, req) => {
+  return res.send('my custom response');
+});
+
 // Start faux
 faux.start(3000);
+```
+
+Once your configuration is ready, use node to run it:
+
+```bash
+node ./path/to/faux.server.js
 ```
 
 ## Accepted routes
@@ -56,6 +75,15 @@ If `attributeRoutes` is activated on the model, Faux will generate route attribu
 - **PATCH => /route/:id/:attribute**: Updates a specific attribute from a row with a specific id
 
 If you wish to ignore certain attributes (such as passwords), you can declare a `protected` array containing the ignored column names.
+
+## Relationship routes
+
+If `relationshipRoutes` is activated on the model, Faux will generate route for you to view, add, modify and delete relationship data:
+
+- **GET => /route/:id/relationship**: Lists all related rows
+- **POST => /route/:id/relationship**: Adds a new row to the model
+- **PATCH => /route/:id/relationship/:relationship_id**: Updates a related model
+- **DELETE => /route/:id/relationship/:relationship_id**: Deletes a related model
 
 ## Mocking the not so happy path
 
@@ -111,7 +139,7 @@ const UserModel = {
   // Protect your routes with middlewares
   // Array [(middleware)<Strings>]
   middlewares: ['auth'],
-  // Use for auth
+  // Columns used for auth
   // Array [(Column)<Strings>]
   authenticate: ['email', 'password'],
   // Encrypted fields
@@ -156,18 +184,38 @@ const UserModel = {
 module.exports = UserModel;
 ```
 
+## Roadmap
+
+- [All future features](https://github.com/olavoasantos/faux-call/issues?q=is:open+is:issue+label:todo)
+
+Functionalities and features:
+
+- [New features](https://github.com/olavoasantos/faux-call/issues?q=is:open+is:issue+label:feature)
+- [Internal refactoring](https://github.com/olavoasantos/faux-call/issues?q=is:open+is:issue+label:refactor)
+
+Project related (documentation, website, ...):
+
+- [Project features](https://github.com/olavoasantos/faux-call/issues?q=is:open+is:issue+label:"project+feature")
+- [Project refactoring](https://github.com/olavoasantos/faux-call/issues?q=is:open+is:issue+label:"project+refactor")
+
+## Bugs
+
+- [Bugs](https://github.com/olavoasantos/faux-call/issues?q=is:open+is:issue+label:bug)
+
 ## Version log
 
-- **v0.1.4**: Internal refactor
+- **v0.2.x**:
+
+  - [Added relationship routes](https://github.com/olavoasantos/faux-call/issues/8)
+  - [Added custom route responses](https://github.com/olavoasantos/faux-call/issues/9)
+  - [Added API route prefix](https://github.com/olavoasantos/faux-call/issues/6)
+  - Bug fixes and internal refactoring
+
+- **v0.1.x**:
 
   - Added relationships (hasOne, hasMany)
   - Added eager loading relationships
   - Added custom authentication prefix
-
-- **v0.1.1**: Small fixes
-
-- **v0.1.0**: Using protection
-
   - Major refactor of code base
   - Added auto generation of atribute routes
   - Added attribute protection
@@ -178,14 +226,14 @@ module.exports = UserModel;
   - Added attribute mutation
   - Changed factory declaration
   - Changed `ignoreAttribute` key to `protected`
+  - Bug fixes and internal refactoring
 
-- **v0.0.2**: Bug fixes
+- **v0.0.x**:
 
-- **v0.0.1**: Hello world!
-
+  - Initial commits
   - Create CRUD based on model schema
   - Seed database using node-factory
 
 ## Author
 
-- [Olavo Amorim Santos]
+- [Olavo Amorim Santos](https://github.com/olavoasantos/)
