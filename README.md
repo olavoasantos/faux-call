@@ -204,7 +204,7 @@ Project related (documentation, website, ...):
 
 ## Version log
 
-- **v0.2.x**:
+- **v0.2.x**: ([overview](https://github.com/olavoasantos/faux-call/pull/15))
 
   - [Added relationship routes](https://github.com/olavoasantos/faux-call/issues/8)
   - [Added custom route responses](https://github.com/olavoasantos/faux-call/issues/9)
