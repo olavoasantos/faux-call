@@ -209,6 +209,7 @@ Project related (documentation, website, ...):
   - [Added relationship routes](https://github.com/olavoasantos/faux-call/issues/8)
   - [Added custom route responses](https://github.com/olavoasantos/faux-call/issues/9)
   - [Added API route prefix](https://github.com/olavoasantos/faux-call/issues/6)
+  - [Added belongs to relationship](https://github.com/olavoasantos/faux-call/pull/19)
   - [Refactored the Auth implementation to a module](https://github.com/olavoasantos/faux-call/pull/18)
   - Bug fixes and internal refactoring
 

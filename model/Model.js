@@ -19,6 +19,7 @@ class Model {
     this.authenticate = [];
     this.hasOne = {};
     this.hasMany = {};
+    this.belongsTo = {};
     this.mutations = {};
     this.validation = {};
     this.eagerLoad = [];
@@ -72,36 +73,41 @@ class Model {
     }, {});
   }
 
-  loadRelationship(model_id, relationship) {
+  loadRelationship(model, relationship) {
     const eagerLoad = check.isObject(relationship)
       ? relationship
-      : {
-          model: relationship
-        };
+      : { model: relationship };
 
     let relationshipModel;
     if (this.hasOne[eagerLoad.model]) {
       relationshipModel = Config.get('models')[eagerLoad.model];
       return relationshipModel.database.where(
         this.hasOne[eagerLoad.model],
-        model_id
-      );
+        model.id
+      ) || null;
     }
     if (this.hasMany[eagerLoad.model]) {
       relationshipModel = Config.get('models')[eagerLoad.model];
       return (
         relationshipModel.database.whereAll(
           this.hasMany[eagerLoad.model],
-          model_id
+          model.id
         ) || []
       );
+    }
+    if (this.belongsTo[eagerLoad.model]) {
+      relationshipModel = Config.get('models')[eagerLoad.model];
+      return relationshipModel.database.where(
+        'id',
+        model[this.belongsTo[eagerLoad.model]]
+      ) || null;
     }
   }
 
   getRelationships(row) {
     if (this.eagerLoad.length > 0) {
       this.eagerLoad.forEach(relationship => {
-        const relationshipData = this.loadRelationship(row.id, relationship);
+        const relationshipData = this.loadRelationship(row, relationship);
         if (relationshipData) {
           row[
             relationship.model
