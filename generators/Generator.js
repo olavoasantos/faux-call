@@ -53,6 +53,9 @@ const Generator = Model => {
    */
   CreateRoute('delete', 'delete', `${Model.route}/:id`, Model);
 
+  /**
+   * Create attribute routes
+   */
   if (Model.attributeRoutes) {
     Model.columns.forEach(column => {
       if (!Model.protected.includes(column)) {
@@ -72,6 +75,9 @@ const Generator = Model => {
     });
   }
 
+  /**
+   * Create relationship routes
+   */
   if (Model.relationshipRoutes) {
     Object.keys(Model.hasOne).forEach(relationship => {
       if (!Model.protected.includes(relationship)) {

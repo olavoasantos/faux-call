@@ -103,6 +103,22 @@ module.exports = (() => {
       return mutations;
     },
 
+    belongsTo: relationships => {
+      if (!check.isObject(relationships)) {
+        error(`The ${name} model belongsTo relationships should be an object.`);
+      }
+
+      Object.keys(relationships).forEach(relationship => {
+        if (!check.isString(relationships[relationship])) {
+          error(
+            `The ${name} model's belongsTo relationship ${relationship} should be a string.`,
+          );
+        }
+      });
+
+      return relationships;
+    },
+
     hasOne: relationships => {
       if (!check.isObject(relationships)) {
         error(`The ${name} model hasOne relationships should be an object.`);
@@ -111,7 +127,7 @@ module.exports = (() => {
       Object.keys(relationships).forEach(relationship => {
         if (!check.isString(relationships[relationship])) {
           error(
-            `The ${name} model's hasOne relationship ${relationship} should be a string strings.`,
+            `The ${name} model's hasOne relationship ${relationship} should be a string.`,
           );
         }
       });
