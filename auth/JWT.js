@@ -31,11 +31,11 @@ const JWT = {
     return Model.database.where(authColumn, data[authColumn]);
   },
 
-  onSuccess: ({ user, token, errors }) => {
+  onSuccess: ({ user, token }) => {
     return { auth: true, token };
   },
 
-  onFail: ({ user, token, errors }) => {
+  onFail: ({ user, errors }) => {
     return { auth: false, token: null, message: errors };
   },
 
