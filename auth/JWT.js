@@ -17,9 +17,9 @@ const JWT = {
       if (!isValid) return isValid;
       if (Model.encrypt.includes(column)) {
         return bcrypt.compareSync(data[column], user[column]);
-      } else {
-        return data[column] === user[column];
       }
+
+      return data[column] === user[column];
     }, true);
   },
 
@@ -31,13 +31,21 @@ const JWT = {
     return Model.database.where(authColumn, data[authColumn]);
   },
 
+  onSuccess: ({ user, token, errors }) => {
+    return { auth: true, token };
+  },
+
+  onFail: ({ user, token, errors }) => {
+    return { auth: false, token: null, message: errors };
+  },
+
   response: ({ user, type, token, errors }) => {
     if (type === 'success') {
-      return { auth: true, token };
+      return JWT.onSuccess({ user, token });
     }
 
     if (type === 'fail') {
-      return { auth: false, token: null, message: errors };
+      return JWT.onFail({ user, errors });
     }
   },
 
