@@ -211,6 +211,7 @@ Project related (documentation, website, ...):
   - [Added API route prefix](https://github.com/olavoasantos/faux-call/issues/6)
   - [Added belongs to relationship](https://github.com/olavoasantos/faux-call/pull/19)
   - [Refactored the Auth implementation to a module](https://github.com/olavoasantos/faux-call/pull/18)
+  - [Mutations accept the server config as the second argument](https://github.com/olavoasantos/faux-call/pull/19)
   - Bug fixes and internal refactoring
 
 - **v0.1.x**:

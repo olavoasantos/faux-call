@@ -1,3 +1,4 @@
+const Config = require('../config');
 const mockResponse = require('./mockResponse');
 const showResponse = require('./showResponse');
 const indexResponse = require('./indexResponse');
@@ -38,6 +39,7 @@ module.exports = (type, model, param) => {
   if (!reponse) throw new Error(`Undefined response ${type}`);
 
   return (req, res) => {
+    Config.set('request', req);
     if (!mockResponse(req, res)) {
       reponse(model, param)(req, res);
     }
