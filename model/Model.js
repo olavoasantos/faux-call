@@ -124,7 +124,7 @@ class Model {
     return Object.keys(data).reduce((mutated, column) => {
       let value = data[column];
       if (this.mutations[column]) {
-        value = this.mutations[column](data[column]);
+        value = this.mutations[column](data[column], Config);
       }
       return { ...mutated, [column]: value };
     }, {});
