@@ -147,7 +147,7 @@ const Generator = Model => {
     });
   }
 
-  if (Model.authenticate) {
+  if (Model.authenticate.length > 0) {
     Config.set('authModel', Model);
     Auth();
   }

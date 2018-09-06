@@ -309,7 +309,7 @@ module.exports = (() => {
         error('The model name should be a string.');
       }
 
-      if (!/^[a-z]+$/i.test(modelName)) {
+      if (!/^\w+$/i.test(modelName)) {
         error('The model name should only contain letters.');
       }
 

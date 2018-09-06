@@ -5,6 +5,10 @@ const Config = require('../config');
 const { getDataFromBody } = require('../helpers');
 
 const JWT = {
+  parseToken: token => {
+    console.log(token);
+    return token;
+  },
   sign: data => {
     const SECRET = Config.get('auth.secret');
     const EXPIRATION = Config.get('auth.expiration');
