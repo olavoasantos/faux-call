@@ -248,7 +248,7 @@ module.exports = (() => {
           );
         }
 
-        if (!columnList.includes(column)) {
+        if (!['id', 'created_at', 'updated_at', ...columnList].includes(column)) {
           error(
             `The protected column '${column}' is not defined in the ${name} model.`,
           );

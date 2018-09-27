@@ -81,26 +81,27 @@ class Model {
     let relationshipModel;
     if (this.hasOne[eagerLoad.model]) {
       relationshipModel = Config.get('models')[eagerLoad.model];
-      return relationshipModel.database.where(
+      const modelData = relationshipModel.database.where(
         this.hasOne[eagerLoad.model],
         model.id
-      ) || null;
+      );
+      return modelData ? relationshipModel.hideProtected(modelData) : null;
     }
     if (this.hasMany[eagerLoad.model]) {
       relationshipModel = Config.get('models')[eagerLoad.model];
-      return (
-        relationshipModel.database.whereAll(
-          this.hasMany[eagerLoad.model],
-          model.id
-        ) || []
+      const modelData = relationshipModel.database.whereAll(
+        this.hasMany[eagerLoad.model],
+        model.id
       );
+      return modelData ? modelData.map(row => relationshipModel.hideProtected(row)) : []
     }
     if (this.belongsTo[eagerLoad.model]) {
       relationshipModel = Config.get('models')[eagerLoad.model];
-      return relationshipModel.database.where(
+      const modelData = relationshipModel.database.where(
         'id',
         model[this.belongsTo[eagerLoad.model]]
-      ) || null;
+      );
+      return modelData ? relationshipModel.hideProtected(modelData) : null;
     }
   }
 
