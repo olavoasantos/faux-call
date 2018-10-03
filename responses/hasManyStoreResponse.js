@@ -8,7 +8,7 @@ const hasManyStoreResponse = (Model, Relationship) => (req, res) => {
 
   const errors = Relationship.validate(data);
   if (Object.keys(errors).length !== 0) {
-    return res.status(403).send(errors);
+    return res.status(400).send({errors});
   }
 
   const row = Relationship.create({

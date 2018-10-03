@@ -13,7 +13,7 @@ const updateResponse = Model => (req, res) => {
 
   const errors = Model.validate(data);
   if (Object.keys(errors).length !== 0) {
-    return res.status(500).send(errors);
+    return res.status(400).send({errors});
   }
 
   const row = Model.update(req.params.id, data);
